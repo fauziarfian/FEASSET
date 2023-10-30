@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode =  "prisma"
+}
+
+model tasks {
+  id               Int      @id @default(autoincrement())
+  id_user          Int
+  task_name        String
+  task_description String   @db.Text
+  created_at       DateTime @default(now())
+  user             users?    @relation(fields: [id_user], references: [id])
+
+  @@index([id_user])
+}
+
+model users {
+  id               Int      @id @default(autoincrement())
+  name             String   
+  email            String   @unique
+  password         String
+  avatar           String?
+  created_at       DateTime @default(now())
+  tasks            tasks[]
+}
+
+model schools {
+  id              Int       @id @default(autoincrement())
+  school_name     String    
+  email           String?
+  address         String?
+  phone           String?
+}
+
+model admin_pengguna {
+  id_admin_pengguna   Int       @id @default(autoincrement())
+  nama                String    
+  peran_satker        String
+  email               String    @unique
+  password            String
+  created_at          DateTime  @default(now())
+}
+
+model daftar_pengguna {
+  id_pengguna     Int       @id @default(autoincrement())
+  nama            String    
+  id_satker       String
+  jabatan         String    
+  telepon         String    
+  created_at      DateTime  @default(now())
+  aktif           String
+  
+  daftar_asset    daftar_asset[]
+  riwayat_asset    riwayat_asset[]
+}
+
+model satker {
+  id_satker      Int        @id @default(autoincrement())
+  nama_satker    String
+}
+
+model kategori {
+  id_kategori    Int        @id @default(autoincrement())
+  kategori       String
+}
+
+model daftar_asset {
+  id_asset           Int        @id @default(autoincrement())
+  id_pengguna        Int?
+  kode_barang        String
+  id_satker          String
+  nama_barang        String
+  tanggal_pembelian  String
+  nomer_pembelian    String
+  merk_tipe          String
+  lampiran           String
+  sn                 String
+  garansi            String
+  kategori           String
+  spesifikasi        String
+  catatan            String
+  // table asset khusus pemerintahan
+  nup                String
+  tgl_rekam_pertama  String
+  tgl_perolehan      String
+  nilai_perolehan_pertama String
+  nilai_mutasi       String
+  nilai_perolehan    String
+  nilai_penyusutan   String
+  nilai_buku         String
+  kuantitas          String
+  jml_foto           String
+  status_penggunaan  String
+  no_psp             String
+  tgl_psp            String
+  create_at          DateTime   @default(now())
+
+
+  pengguna           daftar_pengguna?    @relation(fields: [id_pengguna], references: [id_pengguna])
+
+  @@index([id_pengguna])
+
+}
+
+model riwayat_asset {
+  id_riwayat        Int          @id @default(autoincrement())
+  kode_barang       String
+  item_name         String
+  category          String
+  id_satker         String
+  id_pengguna       Int?
+  status            String
+  kondisi           String?
+  tanda_tangan      String
+  catatan           String
+  create_at         DateTime    @default(now())
+  tgl               String?
+
+  pengguna           daftar_pengguna?    @relation(fields: [id_pengguna], references: [id_pengguna])
+
+  @@index([id_pengguna])
+
+
+}
+
+model daftar_asset_temporary {
+  id_asset_temporary Int        @id @default(autoincrement())
+  id_pengguna        Int?
+  id_group           String
+  kode_barang        String
+  id_satker          String
+  nama_barang        String
+  tanggal_pembelian  String
+  nomer_pembelian    String
+  merk_tipe          String
+  lampiran           String
+  sn                 String
+  garansi            String
+  kategori           String
+  spesifikasi        String
+  catatan            String
+  // table asset khusus pemerintahan
+  nup                String
+  tgl_rekam_pertama  String
+  tgl_perolehan      String
+  nilai_perolehan_pertama String
+  nilai_mutasi       String
+  nilai_perolehan    String
+  nilai_penyusutan   String
+  nilai_buku         String
+  kuantitas          String
+  jml_foto           String
+  status_penggunaan  String
+  no_psp             String
+  tgl_psp            String
+  create_at          DateTime   @default(now())
+}
+
+model riwayat_asset_temporary {
+  id_riwayat_temporary  Int          @id @default(autoincrement())
+  id_group              String
+  kode_barang           String
+  item_name             String
+  category              String
+  id_satker             String
+  id_pengguna           Int?
+  status                String
+  tanda_tangan          String
+  catatan               String
+  kondisi               String?
+  create_at             DateTime    @default(now())
+
+}
